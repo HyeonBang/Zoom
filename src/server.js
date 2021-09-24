@@ -1,3 +1,5 @@
+import * as http from 'http';
+import WebSocket from 'ws';
 import express from 'express';
 
 const app = express();
@@ -9,6 +11,17 @@ app.get('/', (req, res) => res.render('home'));
 app.get('/*', (req, res) => res.redirect('/'));
 
 const handleListen = () => console.log(`Listening on http://localhost:1000`);
-app.listen(1000, handleListen);
+
+// http server 위에 webSocket server를 구축한 형태
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+// socket = browser connected
+function handleConnection(socket) {
+    console.log(socket);
+}
+wss.on('connection', handleConnection);
+
+server.listen(1000, handleListen);
 
 
